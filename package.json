@@ -1,0 +1,13 @@
+{
+  "name": "gerador-senhas-forca-bruta",
+  "version": "1.0.0",
+  "description": "Projeto de Sistemas Operacionais - Quebrador de senhas por força bruta com Threads",
+  "main": "single.js",
+  "scripts": {
+    "start": "node single.js",
+    "test:single": "node single.js so24"
+  },
+  "keywords": ["sistemas-operacionais", "threads", "single-thread", "forca-bruta"],
+  "author": "",
+  "license": "ISC"
+}
