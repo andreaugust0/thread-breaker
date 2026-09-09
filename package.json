@@ -5,7 +5,11 @@
   "main": "single.js",
   "scripts": {
     "start": "node single.js",
-    "test:single": "node single.js so24"
+    "test:single": "node single.js so24",
+    "test:static": "node static.js",
+    "test:dynamic": "node dynamic.js",
+    "benchmark": "node benchmark.js",
+    "benchmark:pesado": "node benchmark-pesado.js"
   },
   "keywords": ["sistemas-operacionais", "threads", "single-thread", "forca-bruta"],
   "author": "",

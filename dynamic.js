@@ -1,3 +1,5 @@
+//dynamic.js
+
 const { Worker } = require('worker_threads');
  
 // Tamanho de cada bloco distribuido pela fila.
@@ -113,10 +115,10 @@ if (require.main === module) {
   const os = require('os');
  
   // Parametros de teste (ajuste a vontade).
-  const senhaAlvo = process.argv[2] || 'sos';
-  const alfabeto = 'abcdefghijklmnopqrstuvwxyz';
+  const senhaAlvo = process.argv[2] || 'zzzzz';
+  const alfabeto = 'abcdefghijklmnopqrstuvwxyz0123456789';
   const tamanhoMax = senhaAlvo.length;
-  const numThreads = os.cpus().length;
+  const numThreads = 4;
  
   console.log(`Estrategia: fila dinamica`);
   console.log(`Senha alvo: "${senhaAlvo}" | alfabeto: ${alfabeto.length} chars | threads: ${numThreads}`);

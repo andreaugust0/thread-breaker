@@ -1,18 +1,21 @@
 'use strict';
 
-
 const { parentPort, workerData } = require('worker_threads');
 
-function combinacoesDoTamanho(alfabetoLen, L) {
-  return Math.pow(alfabetoLen, L);
+const { senhaAlvo, alfabeto, tamanhoMax, inicio, fim, workerId } = workerData;
+
+const base = alfabeto.length;
+const potencias = [0]; 
+for (let L = 1; L <= tamanhoMax; L++) {
+  potencias[L] = Math.pow(base, L); 
 }
 
-function indiceParaSenha(indice, alfabeto, tamanhoMax) {
-  const base = alfabeto.length;
+function indiceParaSenha(indice) {
   let restante = indice;
 
   for (let L = 1; L <= tamanhoMax; L++) {
-    const qtd = combinacoesDoTamanho(base, L);
+    const qtd = potencias[L]; 
+
     if (restante < qtd) {
       const chars = new Array(L);
       let n = restante;
@@ -22,18 +25,18 @@ function indiceParaSenha(indice, alfabeto, tamanhoMax) {
       }
       return chars.join('');
     }
-    restante -= qtd;
+
+    restante -= qtd; 
   }
+
   return null; 
 }
 
-const { senhaAlvo, alfabeto, tamanhoMax, inicio, fim, workerId } = workerData;
-
-const REPORT_A_CADA = 50000; // reporta progresso periodicamente pro main
+const REPORT_A_CADA = 50000; 
 let tentativas = 0;
 
 for (let idx = inicio; idx < fim; idx++) {
-  const candidata = indiceParaSenha(idx, alfabeto, tamanhoMax);
+  const candidata = indiceParaSenha(idx);
   tentativas++;
 
   if (candidata === senhaAlvo) {
