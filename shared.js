@@ -61,5 +61,24 @@ async function crackear(senhaAlvo, alfabeto, tamanhoMax, numThreads) {
 
 module.exports = { crackear };
 
+if (require.main === module) {
+  const senhaAlvo = process.argv[2] || 'zzzzz';
+  const alfabeto = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const tamanhoMax = senhaAlvo.length;
+  const numThreads = 4;
+
+  console.log('Estrategia: memoria compartilhada');
+  console.log(`Senha alvo: "${senhaAlvo}" | alfabeto: ${alfabeto.length} chars | threads: ${numThreads}`);
+
+  crackear(senhaAlvo, alfabeto, tamanhoMax, numThreads).then((resultado) => {
+    console.log('---');
+    console.log(`Encontrada: ${resultado.encontrada}`);
+    console.log(`Tentativas: ${resultado.tentativas.toLocaleString('pt-BR')}`);
+    console.log(`Tempo:      ${resultado.tempoMs} ms`);
+  });
+}
+
+module.exports = { crackear };
+
 
  

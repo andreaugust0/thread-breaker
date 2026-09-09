@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Thread Breaker — Slides</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#0e1014;--card:#171a21;--border:#272c37;--text:#e8eaed;--muted:#9aa1ad;
+    --accent:#5b8def;--accent2:#e0a458;--green:#4ac489;--red:#e06868}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  /* cada slide ocupa a tela toda; navegue com as setas do teclado */
+  .slide{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:5vh 6vw;scroll-snap-align:start}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  h1{font-size:clamp(28px,4vw,46px);font-weight:750;letter-spacing:-1px;margin-bottom:10px}
+  h2{font-size:clamp(22px,3vw,34px);font-weight:700;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:clamp(15px,1.6vw,20px)}
+  .tag{background:#1c2029;border:1px solid var(--border);border-radius:7px;padding:2px 10px;
+    font-family:ui-monospace,monospace;font-size:.85em}
+  .chart{position:relative;height:58vh;margin-top:3vh}
+  .big{display:flex;gap:24px;flex-wrap:wrap;margin-top:3vh}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 28px;flex:1;min-width:160px}
+  .stat .l{color:var(--muted);font-size:15px;margin-bottom:6px}
+  .stat .v{font-size:clamp(30px,4vw,48px);font-weight:750;line-height:1}
+  .stat .v small{font-size:18px;color:var(--muted);font-weight:400}
+  .hint{position:fixed;bottom:14px;right:18px;color:var(--muted);font-size:12px;opacity:.6}
+  .center{text-align:center;align-items:center}
+  .q{font-size:clamp(24px,3.5vw,40px);font-weight:600;max-width:16ch;margin:0 auto;line-height:1.3}
+  .accent{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <h2>O espaço de busca explode</h2>
+  <p class="sub">Cada caractere a mais multiplica as combinações por 36</p>
+  <div class="chart"><canvas id="gCresc"></canvas></div>
+</section>
+
+<section class="slide">
+  <h2>Senha fácil <span class="tag">zzzz</span> </h2>
+  <div class="chart"><canvas id="gFacil"></canvas></div>
+</section>
+
+<section class="slide">
+  <h2>Senha difícil <span class="tag">zzzzzz</span></h2>
+  <div class="big">
+    <div class="stat"><div class="l">1 thread</div><div class="v" style="color:var(--red)">79,6<small>s</small></div></div>
+    <div class="stat"><div class="l">24 threads</div><div class="v" style="color:var(--green)">4,6<small>s</small></div></div>
+    <div class="stat"><div class="l">Ganho</div><div class="v" style="color:var(--green)">17×</div></div>
+  </div>
+  <div class="chart" style="height:44vh"><canvas id="gDif"></canvas></div>
+</section>
+
+<section class="slide">
+  <h2>As 4 estratégias <span class="sub" style="font-size:.6em">(zzzzzz, 8 threads)</span></h2>
+  <div class="chart"><canvas id="gComp"></canvas></div>
+</section>
+
+<div class="hint">use ↓ / ↑ para navegar</div>
+
+<script>
+const grid='#272c37',tick='#9aa1ad';
+Chart.defaults.color=tick;Chart.defaults.font.size=15;
+
+new Chart(gCresc,{type:'line',
+  data:{labels:['2 chars','3 chars','4 chars','5 chars'],
+    datasets:[{label:'Combinações (escala log)',data:[666,38666,1643098,54573466],
+      borderColor:'#e0a458',backgroundColor:'rgba(224,164,88,.15)',fill:true,tension:.3,pointRadius:6,pointBackgroundColor:'#e0a458',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:grid}},y:{type:'logarithmic',grid:{color:grid}}}}});
+
+new Chart(gFacil,{type:'bar',
+  data:{labels:['single','static','dynamic','shared'],
+    datasets:[{label:'Tempo (ms)',data:[19,109,127,134],
+      backgroundColor:['#4ac489','#5b8def','#5b8def','#5b8def'],borderRadius:8,maxBarThickness:110}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:grid}},y:{grid:{color:grid},title:{display:true,text:'Tempo (ms) — menor é melhor'}}}}});
+
+new Chart(gDif,{type:'line',
+  data:{labels:[1,4,8,12,24],
+    datasets:[{label:'Tempo (s)',data:[79.6,26.8,18.1,13.7,4.6],
+      borderColor:'#5b8def',backgroundColor:'rgba(91,141,239,.15)',fill:true,tension:.3,pointRadius:7,pointBackgroundColor:'#5b8def',borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:grid},title:{display:true,text:'Número de threads'}},y:{grid:{color:grid},title:{display:true,text:'Tempo (segundos)'},beginAtZero:true}}}});
+
+new Chart(gComp,{type:'bar',
+  data:{labels:['single','static','dynamic','shared'],
+    datasets:[{label:'Tempo (s)',data:[17.9,103.1,19.2,18.7],
+      backgroundColor:['#5b8def','#e06868','#5b8def','#4ac489'],borderRadius:8,maxBarThickness:110}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:grid}},y:{grid:{color:grid},title:{display:true,text:'Tempo (segundos) — menor é melhor'},beginAtZero:true}}}});
+
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key===' '){i=Math.min(i+1,slides.length-1);slides[i].scrollIntoView();e.preventDefault();}
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft'){i=Math.max(i-1,0);slides[i].scrollIntoView();e.preventDefault();}
+});
+</script>
+</body>
+</html>

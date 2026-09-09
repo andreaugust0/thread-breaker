@@ -1,3 +1,5 @@
+//static.js
+
 'use strict';
 
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
@@ -33,13 +35,13 @@ function indiceParaSenha(indice, alfabeto, tamanhoMax) {
     }
     restante -= qtd;
   }
-  return null; // não deveria acontecer se indice < totalCombinacoes
+  return null; 
 }
 
 if (!isMainThread) {
   const { senhaAlvo, alfabeto, tamanhoMax, inicio, fim, workerId } = workerData;
 
-  const REPORT_A_CADA = 50000; // reporta progresso periodicamente
+  const REPORT_A_CADA = 50000; 
   let tentativas = 0;
 
   for (let idx = inicio; idx < fim; idx++) {
@@ -152,16 +154,19 @@ function crackear(senhaAlvo, alfabeto, tamanhoMax, numThreads) {
 }
 
 if (isMainThread && require.main === module) {
-  const ALFABETO = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
-  const SENHA_ALVO = 'zz9';   // ajuste para testar tempos diferentes
-  const TAMANHO_MAX = 4;
+  const ALFABETO = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const SENHA_ALVO = process.argv[2] || 'zzzzz';
+  const TAMANHO_MAX = SENHA_ALVO.length;
   const NUM_THREADS = 4;
 
-  console.log('--- static.js (Worker Threads, divisão estática) ---');
-  console.log(`Alvo: "${SENHA_ALVO}" | alfabeto: ${ALFABETO.length} chars | tamanhoMax: ${TAMANHO_MAX} | threads: ${NUM_THREADS}`);
+  console.log('Estrategia: divisao estatica');
+  console.log(`Senha alvo: "${SENHA_ALVO}" | alfabeto: ${ALFABETO.length} chars | threads: ${NUM_THREADS}`);
 
   crackear(SENHA_ALVO, ALFABETO, TAMANHO_MAX, NUM_THREADS).then((resultado) => {
-    console.log('Resultado:', resultado);
+    console.log('---');
+    console.log(`Encontrada: ${resultado.encontrada}`);
+    console.log(`Tentativas: ${resultado.tentativas.toLocaleString('pt-BR')}`);
+    console.log(`Tempo:      ${resultado.tempoMs} ms`);
   });
 }
 
