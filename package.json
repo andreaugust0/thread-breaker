@@ -9,9 +9,13 @@
     "test:static": "node static.js",
     "test:dynamic": "node dynamic.js",
     "benchmark": "node benchmark.js",
-    "benchmark:pesado": "node benchmark-pesado.js"
+    "benchmark:pesado": "node benchmark-pesado.js",
+    "web": "node web/server.js"
   },
   "keywords": ["sistemas-operacionais", "threads", "single-thread", "forca-bruta"],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
 }
