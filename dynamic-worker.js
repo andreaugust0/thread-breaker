@@ -2,7 +2,6 @@ const { parentPort, workerData } = require('worker_threads');
  
 const { senhaAlvo, alfabeto, tamanho } = workerData;
  
-// Mesma conversao indice -> senha usada pelo coordenador.
 function numeroParaSenha(numero, alfabeto, tamanho) {
   const base = alfabeto.length;
   let senha = '';
@@ -14,10 +13,7 @@ function numeroParaSenha(numero, alfabeto, tamanho) {
   return senha;
 }
  
-// O worker fica ocioso esperando a fila. A cada bloco { inicio, fim } que
-// recebe, testa todos os candidatos daquele intervalo, devolve o resultado
-// e volta a esperar o proximo bloco. Quem termina mais rapido recebe mais
-// blocos: e assim que a fila dinamica equilibra a carga sozinha.
+
 parentPort.on('message', ({ inicio, fim }) => {
   let tentativas = 0;
   let encontrada = null;
@@ -28,10 +24,9 @@ parentPort.on('message', ({ inicio, fim }) => {
  
     if (candidato === senhaAlvo) {
       encontrada = candidato;
-      break; // achou dentro deste bloco: para de testar o resto
+      break;
     }
   }
  
-  // Bloco concluido: avisa o coordenador e pede (implicitamente) mais trabalho.
   parentPort.postMessage({ encontrada, tentativas });
 });

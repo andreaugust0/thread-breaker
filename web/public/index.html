@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thread Breaker — Demonstração</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topo">
+  <h1>Thread Breaker</h1>
+  <p class="subtitulo">Demonstração ao vivo de quebra de senha por força bruta com threads</p>
+</header>
+
+<main>
+  <section class="painel painel-config">
+    <form id="form-config">
+      <div class="campo">
+        <label for="senha">Senha alvo</label>
+        <input id="senha" name="senha" type="text" autocomplete="off" required maxlength="6" placeholder="ex: ab12">
+      </div>
+
+      <div class="campo">
+        <label for="threads">Threads</label>
+        <input id="threads" name="threads" type="number" min="1" max="32" value="4">
+      </div>
+
+      <div class="campo">
+        <label for="estrategia">Estratégia</label>
+        <select id="estrategia" name="estrategia">
+          <option value="single">Single-thread</option>
+          <option value="static" selected>Divisão estática</option>
+          <option value="dynamic">Fila dinâmica</option>
+          <option value="shared">Memória compartilhada</option>
+        </select>
+      </div>
+
+      <details class="campo campo-avancado">
+        <summary>Alfabeto (avançado)</summary>
+        <input id="alfabeto" name="alfabeto" type="text" value="abcdefghijklmnopqrstuvwxyz0123456789">
+      </details>
+
+      <p class="aviso" id="aviso-estrategia"></p>
+
+      <div class="acoes">
+        <button type="submit" id="btn-iniciar">Iniciar</button>
+        <button type="button" id="btn-cancelar" disabled>Cancelar</button>
+      </div>
+
+      <p class="status" id="status-servidor">Conectando...</p>
+    </form>
+  </section>
+
+  <section class="painel painel-threads">
+    <h2>Threads</h2>
+    <div class="grid-threads" id="grid-threads">
+      <p class="vazio">Configure e clique em Iniciar para ver as threads em ação.</p>
+    </div>
+  </section>
+
+  <section class="painel-graficos">
+    <div class="painel card-grafico">
+      <h3>Tentativas por thread</h3>
+      <div class="grafico-wrap"><canvas id="grafico-barras"></canvas></div>
+    </div>
+    <div class="painel card-grafico">
+      <h3>Tentativas totais ao longo do tempo</h3>
+      <div class="grafico-wrap"><canvas id="grafico-linha"></canvas></div>
+    </div>
+  </section>
+
+  <section class="painel painel-resultado" id="painel-resultado" hidden>
+    <h2>Resultado</h2>
+    <div class="stats" id="stats-resultado"></div>
+  </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
